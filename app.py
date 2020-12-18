@@ -16,7 +16,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 if __name__ == '__main__':
-    scraper = SubmissionScraper('kfrbvy')
+    scraper = SubmissionScraper('kfqvif', only_top_level_comments=False)
     preprocessor = SimplePreprocessor()
     analyzer = SimpleTopicModel()
     simple_livebot = LiveBot(scraper, preprocessor, analyzer, refresh_rate=1)
