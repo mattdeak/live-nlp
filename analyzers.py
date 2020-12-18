@@ -20,6 +20,7 @@ class SimpleTopicModel:
         # TDF
         corpus = [id2word.doc2bow(text) for text in texts]
 
+
         # LDA
         lda_model = gensim.models.ldamodel.LdaModel(
             corpus=corpus,
@@ -32,3 +33,4 @@ class SimpleTopicModel:
         )
 
         return lda_model
+
