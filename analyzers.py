@@ -4,10 +4,12 @@ from gensim import corpora
 import tensorflow as tf
 import tensorflow_hub as hub
 
+
 class SimpleTopicModel:
     """SimpleTopicModel
 
     Uses simple bigram LDA to generate topics. Uses gensim."""
+
     def __init__(self, num_topics=5):
         self.num_topics = num_topics
 
@@ -21,7 +23,6 @@ class SimpleTopicModel:
 
         # TDF
         corpus = [id2word.doc2bow(text) for text in texts]
-
 
         # LDA
         lda_model = gensim.models.ldamodel.LdaModel(
@@ -38,10 +39,13 @@ class SimpleTopicModel:
 
 
 class KerasModel:
-    def __init__(self, model):
+    def __init__(self, model, return_comments=False):
         self.model = model
+        self.return_comments = return_comments
 
     def analyze(self, documents):
-        self.model.predict(documents)
-
-
+        preds = self.model.predict(documents)
+        if self.return_comments:
+            return (documents, preds)
+        else:
+            return preds

@@ -18,13 +18,13 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 if __name__ == '__main__':
-    scraper = SubmissionScraper('kfqvif', only_top_level_comments=False)
+    scraper = SubmissionScraper('khwq8w', only_top_level_comments=False)
     preprocessor = Listifier()
     # preprocessor = SimplePreprocessor()
     # analyzer = SimpleTopicModel()
 
     bert_sentiment_model = tf.keras.models.load_model('models/test_model_BERT')
-    analyzer = KerasModel(bert_sentiment_model)
+    analyzer = KerasModel(bert_sentiment_model, return_comments=True)
     simple_livebot = LiveBot(scraper, preprocessor, analyzer, refresh_rate=1)
 
     asyncio.run(simple_livebot.run())
