@@ -1,6 +1,8 @@
 import gensim
 from gensim import corpora
 
+import tensorflow as tf
+import tensorflow_hub as hub
 
 class SimpleTopicModel:
     """SimpleTopicModel
@@ -33,4 +35,13 @@ class SimpleTopicModel:
         )
 
         return lda_model
+
+
+class KerasModel:
+    def __init__(self, model):
+        self.model = model
+
+    def analyze(self, documents):
+        self.model.predict(documents)
+
 

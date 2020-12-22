@@ -64,3 +64,17 @@ class SimplePreprocessor:
             final_comments.append(processed_tokens)
 
         return final_comments
+
+
+class Listifier:
+    """Listifier
+
+    Does nothing but convert comments into a list of documents"""
+
+
+    def preprocess(self, data):
+        raw_comments = data["comments"]
+        raw_comments = [comment["text"] for comment in raw_comments.values()]
+
+        assert type(raw_comments[0]) == str, "Comments should be a list of strings"
+        return raw_comments

@@ -33,19 +33,22 @@ class LiveBot:
 
 
     async def run(self):
-        timestamp = datetime.datetime.now().timestamp()
+        while True:
+            timestamp = datetime.datetime.now().timestamp()
 
-        logger.debug('Running Scraper')
-        data = self.scraper.run()
-        logger.debug('Running Preprocessor')
-        processed = self.preprocessor.preprocess(data)
-        logger.debug('Running Running Analyzer')
-        lda_model = self.analyzer.analyze(processed)
+            logger.debug('Running Scraper')
+            data = self.scraper.run()
 
-        logger.debug('Saving LDA Model') 
-        with open(os.path.join(self.log_dir, str(timestamp)), 'wb+') as outfile:
-            pickle.dump(lda_model, outfile)
+            logger.debug('Running Preprocessor')
+            processed = self.preprocessor.preprocess(data)
 
-        logger.debug('Sleeping')
-        await asyncio.sleep(self.refresh_rate*60)
+            logger.debug('Running Running Analyzer')
+            analysis = self.analyzer.analyze(processed)
+
+            logger.debug('Saving Analysisl') 
+            with open(os.path.join(self.log_dir, str(timestamp)), 'wb+') as outfile:
+                pickle.dump(analysis, outfile)
+
+            logger.debug('Sleeping')
+            await asyncio.sleep(self.refresh_rate*60)
 
