@@ -4,7 +4,7 @@ from gensim import corpora
 import tensorflow as tf
 import tensorflow_hub as hub
 import requests
-import json 
+import json
 
 
 class DummyAnalyzer:
@@ -28,7 +28,7 @@ class TFModelClient:
     def run(self, data):
         headers = {"content-type": "application/json"}
 
-        json_data = json.dumps({"signatue_name":"serving_default", "instances": data})
+        json_data = json.dumps({"signature_name": "serving_default", "instances": data})
         json_response = requests.post(
             f"http://localhost:{self.port}/v1/models/{self.model_name}:predict",
             data=json_data,

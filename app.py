@@ -9,6 +9,7 @@ from analyzers import (DummyAnalyzer, KerasModel, SimpleTopicModel,
                        TFModelClient)
 from bots import RedditStreamer
 from reddit.preprocessors import CommentBodyExtractor, SimplePreprocessor
+from reddit.writers import JSONWriter
 
 logger = logging.getLogger('app')
 logger.setLevel(logging.INFO)
@@ -22,6 +23,8 @@ logger.addHandler(handler)
 if __name__ == '__main__':
     preprocessor = CommentBodyExtractor()
     analyzer = TFModelClient(8501, 'BERT_test1')
+    writer = JSONWriter('data/newstest1')
 
-    bot = RedditStreamer('news', preprocessor, analyzer, None)
+
+    bot = RedditStreamer('news', preprocessor, analyzer, writer)
     bot.run()
