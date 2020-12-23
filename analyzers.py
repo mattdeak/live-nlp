@@ -3,6 +3,9 @@ from gensim import corpora
 
 import tensorflow as tf
 import tensorflow_hub as hub
+import requests
+import json 
+
 
 class DummyAnalyzer:
     """DummyAnalyzer
@@ -12,6 +15,27 @@ class DummyAnalyzer:
     def run(self, data):
         return data
 
+
+class TFModelClient:
+    """TFModelClient
+
+    Communicates with a TF Model Server using a REST API"""
+
+    def __init__(self, port, model_name):
+        self.port = port
+        self.model_name = model_name
+
+    def run(self, data):
+        headers = {"content-type": "application/json"}
+
+        json_data = json.dumps({"signatue_name":"serving_default", "instances": data})
+        json_response = requests.post(
+            f"http://localhost:{self.port}/v1/models/{self.model_name}:predict",
+            data=json_data,
+            headers=headers,
+        )
+
+        predictions = json.loads(json_response.text)["predictions"]
 
 
 class SimpleTopicModel:
