@@ -1,6 +1,5 @@
 import logging
-from scraper import SubmissionScraper
-from streamer import RedditStreamer
+from bots import RedditStreamer
 from reddit.preprocessors import SimplePreprocessor, CommentBodyExtractor
 from analyzers import SimpleTopicModel, KerasModel, DummyAnalyzer, TFModelClient
 from livebot import LiveBot
