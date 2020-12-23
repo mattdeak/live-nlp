@@ -56,13 +56,8 @@ class RedditStreamer:
         self.min_refresh_rate = min_refresh_rate
 
         self.logger = logging.getLogger("app")
-        self.reset()
-
-    def reset(self):
         self.logger.debug("Initializing Subreddit Instance")
         self.subreddit = self.reddit_client.subreddit(self.subreddit_name)
-        self.data = {"created_utc": self.subreddit.created_utc}
-        self.data["comments"] = {}
         self.logger.info("Scraper Initialized")
 
     def run(self):
@@ -91,11 +86,15 @@ class RedditStreamer:
     def _streaming_thread(self, q):
         self.logger.info("Starting Streaming Thread")
         for comment in self.subreddit.stream.comments():
-
             q.put(comment)
 
     def _analysis_thread(self, new_q, analyzed_q):
         """_analysis_thread
+
+        Performs analysis of incoming comments on the reddit stream.
+
+        Note:
+        Ideally, the preprocessor and analyzer should be mainly I/O bound. Unless they are very quick, it is likely better to serve the true analyzer and preprocessor in a separate process or service, and use the analyzer/preprocessor classes to communicate with it.
 
         Parameters
         ----------
@@ -136,19 +135,30 @@ class RedditStreamer:
 
                 if num_items_stored != 0:
                     self.logger.info(f"Running Analysis on {num_items_stored} Comments")
-                    analyzed = self.analyzer.run(analysis_batch)
+
+                    preprocessed = self.preprocessor.run(analysis_batch)
+                    analyzed = self.analyzer.run(preprocessed)
+
+                    # Merge analysis with original comment information
+                    results = []
+                    for comment, analysis in zip(analysis_batch, analyzed):
+                        results.append({"comment": comment, "analysis": analysis})
+
+                    for item in results:
+                        analyzed_q.put(item)
+
                     num_items_stored = 0
                     analysis_batch = []
 
-                    for item in analyzed:
-                        analyzed_q.put(item)
-                
-
+                # Reset Timeout Threshold
                 start_time = time.time()
 
     def _result_handler_thread(self, analyzed_q):
         # TODO: Implement this whole thing.
         # ---- DUMMY for TESTING
         while True:
-            data = analyzed_q.get(block=True)
-            self.logger.info(data.body)
+            result = analyzed_q.get(block=True)
+            comment = result['comment']
+            sentiment = result['analysis']
+            print(comment.body[:10], sentiment)
+            

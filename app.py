@@ -1,8 +1,8 @@
 import logging
 from scraper import SubmissionScraper
 from streamer import RedditStreamer
-from preprocessors import SimplePreprocessor, Listifier, DummyPreprocessor
-from analyzers import SimpleTopicModel, KerasModel, DummyAnalyzer
+from reddit.preprocessors import SimplePreprocessor, CommentBodyExtractor
+from analyzers import SimpleTopicModel, KerasModel, DummyAnalyzer, TFModelClient
 from livebot import LiveBot
 import sys
 import asyncio
@@ -20,8 +20,8 @@ logger.addHandler(handler)
 
 if __name__ == '__main__':
     # scraper = SubmissionScraper('khwq8w', only_top_level_comments=False)
-    preprocessor = DummyPreprocessor()
-    analyzer = DummyAnalyzer()
+    preprocessor = CommentBodyExtractor()
+    analyzer = TFModelClient(8501, 'BERT_test1')
     # preprocessor = SimplePreprocessor()
     # analyzer = SimpleTopicModel()
 

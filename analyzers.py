@@ -36,6 +36,7 @@ class TFModelClient:
         )
 
         predictions = json.loads(json_response.text)["predictions"]
+        return predictions
 
 
 class SimpleTopicModel:

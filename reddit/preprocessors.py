@@ -10,7 +10,6 @@ def extract_markdown_link(text):
     return re.sub(RE_FIND_MARKDOWN_LINK, "\g<1>", text)
 
 class DummyPreprocessor:
-
     def run(self, data):
         return data
 
@@ -70,15 +69,14 @@ class SimplePreprocessor:
         return final_comments
 
 
-class Listifier:
+class CommentBodyExtractor:
     """Listifier
 
     Does nothing but convert comments into a list of documents"""
 
 
-    def preprocess(self, data):
-        raw_comments = data["comments"]
-        raw_comments = [comment["text"] for comment in raw_comments.values()]
+    def run(self, data):
+        comments = [comment.body for comment in data]
 
-        assert type(raw_comments[0]) == str, "Comments should be a list of strings"
-        return raw_comments
+        assert type(comments[0]) == str, "Comments should be a list of strings"
+        return comments
