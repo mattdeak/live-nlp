@@ -158,7 +158,6 @@ class RedditStreamer:
         # ---- DUMMY for TESTING
         while True:
             result = analyzed_q.get(block=True)
-            comment = result['comment']
-            sentiment = result['analysis']
-            print(comment.body[:10], sentiment)
+            self.logger.debug("Writing result to file")
+            self.result_handler.run(result)
             
