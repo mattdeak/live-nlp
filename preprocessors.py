@@ -9,6 +9,10 @@ RE_FIND_MARKDOWN_LINK = r'\[(.+)\]\(([^ ]+?)( "(.+)")?\)'
 def extract_markdown_link(text):
     return re.sub(RE_FIND_MARKDOWN_LINK, "\g<1>", text)
 
+class DummyPreprocessor:
+
+    def run(self, data):
+        return data
 
 class SimplePreprocessor:
     """SimplePreprocessor

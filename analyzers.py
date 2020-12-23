@@ -4,6 +4,15 @@ from gensim import corpora
 import tensorflow as tf
 import tensorflow_hub as hub
 
+class DummyAnalyzer:
+    """DummyAnalyzer
+
+    A dummy class that does essentially nothing. Used for testing"""
+
+    def run(self, data):
+        return data
+
+
 
 class SimpleTopicModel:
     """SimpleTopicModel
