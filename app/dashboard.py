@@ -11,7 +11,7 @@ import datetime
 from flask import Flask, render_template
 
 testfile = "1608669595.842317"
-default_url = 'http://localhost:5006/streaming_chart'
+default_url = 'http://0.0.0.0:5006/streaming_chart'
 
 app = Flask(__name__)
 
@@ -28,4 +28,4 @@ def index():
     )
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)

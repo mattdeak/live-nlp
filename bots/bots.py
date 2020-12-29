@@ -160,4 +160,3 @@ class RedditStreamer:
             result = analyzed_q.get(block=True)
             self.logger.debug("Writing result to file")
             self.result_handler.run(result)
-            

@@ -1,0 +1,22 @@
+version: '3'
+services:
+    flask:
+        container_name: 'livenlp_dashboard'
+        build:
+            context: ./app
+            dockerfile: Dockerfile
+        ports:
+            - "5000:5000"
+        environment:
+            FLASK_ENV: development
+    bokeh:
+        container_name: 'livenlp_bokeh'
+        build:
+            context: ./bokeh
+            dockerfile: Dockerfile
+        ports:
+            - "5006:5006"
+    # db:
+    #     image: mongo:latest
+    #     ports:
+    #         - "27017:27017"
