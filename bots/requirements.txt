@@ -1,0 +1,7 @@
+tensorflow-text
+tensorflow-hub
+gensim>=3.8.3
+praw>=7.1.0
+spacy
+safer>=4.3.0
+pymongo>=3.9.0

@@ -7,7 +7,6 @@ import time
 from abc import ABC, abstractmethod
 
 import praw
-import yaml
 from praw.models import MoreComments, Submission
 
 # -------------------------------------------------------------- #

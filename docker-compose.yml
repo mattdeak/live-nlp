@@ -16,7 +16,28 @@ services:
             dockerfile: Dockerfile
         ports:
             - "5006:5006"
-    # db:
-    #     image: mongo:latest
-    #     ports:
-    #         - "27017:27017"
+    db:
+        image: mongo:latest
+        container_name: 'livenlp_mongo'
+        hostname: mongodb
+        volumes:
+            # - ./mongo/mongod.conf:/etc/mongod.conf
+            # - ./mongo/initdb.d:/docker-entrypoints-initdb.d/
+            - mongodb_data_container:/data/db/
+            - ./mongo/data/log/:/var/log/mongodb/
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+            MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+        ports:
+            - "27017:27017"
+        # command: ["-f", "/etc/mongod.conf"]
+    bots:
+        container_name: 'livenlp_bots'
+        build:
+            context: ./bots
+            dockerfile: Dockerfile
+
+
+volumes:
+    mongodb_data_container:

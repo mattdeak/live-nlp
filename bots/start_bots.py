@@ -1,14 +1,13 @@
-import asyncio
 import logging
 import sys
 
 import tensorflow as tf
 import tensorflow_text as text
 
-from bots.analyzers import DummyAnalyzer, KerasModel, SimpleTopicModel, TFModelClient
-from bots.bots import RedditStreamer
-from bots.reddit.preprocessors import CommentBodyExtractor, SimplePreprocessor
-from bots.reddit.writers import JSONWriter
+from analyzers import DummyAnalyzer, KerasModel, SimpleTopicModel, TFModelClient
+from bots import RedditStreamer
+from reddit.preprocessors import CommentBodyExtractor, SimplePreprocessor
+from reddit.writers import JSONWriter
 
 logger = logging.getLogger("app")
 logger.setLevel(logging.INFO)
@@ -20,6 +19,7 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+# TODO: This will have to be a published service eventually. A simply websocket should be fine.
 if __name__ == "__main__":
     preprocessor = CommentBodyExtractor()
     analyzer = TFModelClient(8501, "BERT_test1")
