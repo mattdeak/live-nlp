@@ -1,13 +1,13 @@
-FROM tensorflow/tensorflow:latest-gpu-py3
 
+# FROM ubuntu:18.04
+FROM python:3.8-buster
 
-WORKDIR /home/app
+# RUN apt-get update && \
+#     apt-get install -y python-pip python-dev build-essential
 
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
+WORKDIR /home/app
 COPY . .
-CMD python start_bots.py
-        
-
-
+CMD ["python","start_bots.py"]

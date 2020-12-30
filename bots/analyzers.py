@@ -1,8 +1,6 @@
 import gensim
 from gensim import corpora
 
-import tensorflow as tf
-import tensorflow_hub as hub
 import requests
 import json
 

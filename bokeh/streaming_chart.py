@@ -11,30 +11,20 @@ from bokeh.models.sources import ColumnDataSource
 from bokeh.plotting import curdoc, figure
 from tornado import gen
 
-data = []
-with open("data/newstest2", "r") as infile:
-    for line in infile:
-        data.append(json.loads(line))
-comments = []
-analyses = []
-for line in data:
-    comments.append(line["comment"])
-    analyses.append(line["analysis"][0])
+from readers import MongoReader
+import os
+
+DB_NAME = os.environ["DB_NAME"]
+COLL_NAME = os.environ["DB_COL"]
+
+reader = MongoReader(DB_NAME, COLL_NAME)
 
 
-def get_sentiment_dataframe():
-    data = []
-    with open("data/newstest2", "r") as infile:
-        for line in infile:
-            data.append(json.loads(line))
-    comments = []
-    analyses = []
-    for line in data:
-        comments.append(line["comment"])
-        analyses.append(line["analysis"][0])
+def get_sentiment_stats(last_datetime=0):
 
-    df = pd.DataFrame.from_dict(comments)
-    df["analysis"] = analyses
+    data = reader.read(last_datetime)
+
+    df = pd.DataFrame.from_dict(data)
     df["created_datetime"] = df["created_utc"].apply(datetime.datetime.fromtimestamp)
 
     df = df.set_index("created_datetime")
@@ -49,7 +39,8 @@ def get_sentiment_dataframe():
     return sentiment_mean, sentiment_std, datetimes
 
 
-new_means, new_stds, new_datetimes = get_sentiment_dataframe()
+# ---- Define Initial Chart --- #
+new_means, new_stds, new_datetimes = get_sentiment_stats()
 
 new_mean_data = dict()
 new_fill_data = dict()
@@ -90,18 +81,12 @@ def update(x, y, y1, y2):
 
 def load_new_comments():
     while True:
-        # Sleep for 1 second
-        time.sleep(1)
-        with open("data/newstest2", "r") as infile:
-            for line in infile:
-                data.append(json.loads(line))
-
-        new_means, new_stds, new_datetimes = get_sentiment_dataframe()
+        # Sleep for 3 second
+        # TODO: Maybe environ variable? Thnk about it
+        time.sleep(3)
 
         latest_datetime = source.data["x"][-1]
-        new_means = new_means[new_means.index > latest_datetime]
-        new_stds = new_stds[new_stds.index > latest_datetime]
-        new_datetimes = new_datetimes[new_datetimes > latest_datetime]
+        new_means, new_stds, new_datetimes = get_sentiment_stats()
 
         doc.add_next_tick_callback(
             partial(
