@@ -27,10 +27,11 @@ class MongoWriter:
         self,
         database_name,
         collection_name,
-        host="localhost",
+        host="db",
         port=27017,
         comment_attributes=["body", "created_utc", "id", "score"],
     ):
+        self.comment_attributes = comment_attributes
         self.client = MongoClient(host, port)
         self.collection = self.client[database_name][collection_name]
 

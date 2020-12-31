@@ -3,15 +3,20 @@ from gensim import corpora
 
 import requests
 import json
+import random
+import numpy as np
 
 
 class DummyAnalyzer:
     """DummyAnalyzer
 
-    A dummy class that does essentially nothing. Used for testing"""
+    A dummy class that returns pseudo-random analysis results. Used for testing"""
+    def __init__(self, seed=0):
+        self.seed=seed
 
     def run(self, data):
-        return data
+        np.random.seed(self.seed)
+        return np.random.random(size=len(data))
 
 
 class TFModelClient:

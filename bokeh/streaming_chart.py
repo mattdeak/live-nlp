@@ -20,11 +20,14 @@ COLL_NAME = os.environ["DB_COL"]
 reader = MongoReader(DB_NAME, COLL_NAME)
 
 
-def get_sentiment_stats(last_datetime=0):
-
-    data = reader.read(last_datetime)
+def get_updated_df(last_utc=0):
+    data = reader.run(last_utc)
 
     df = pd.DataFrame.from_dict(data)
+    return df
+
+
+def get_sentiment_stats(df):
     df["created_datetime"] = df["created_utc"].apply(datetime.datetime.fromtimestamp)
 
     df = df.set_index("created_datetime")
@@ -40,16 +43,11 @@ def get_sentiment_stats(last_datetime=0):
 
 
 # ---- Define Initial Chart --- #
-new_means, new_stds, new_datetimes = get_sentiment_stats()
+new_df = get_updated_df()
 
-new_mean_data = dict()
-new_fill_data = dict()
+most_recent_utc = new_df["created_utc"].max()
 
-new_mean_data["x"] = new_datetimes
-new_mean_data["y"] = new_means
-new_fill_data["x"] = new_datetimes
-new_fill_data["y1"] = new_means - new_stds
-new_fill_data["y2"] = new_means + new_stds
+new_means, new_stds, new_datetimes = get_sentiment_stats(new_df)
 
 new_data = {
     "x": new_datetimes,
@@ -80,13 +78,22 @@ def update(x, y, y1, y2):
 
 
 def load_new_comments():
+    # I don't love this, but it works.
+    global most_recent_utc
+
     while True:
         # Sleep for 3 second
         # TODO: Maybe environ variable? Thnk about it
         time.sleep(3)
+        new_df = get_updated_df(last_utc=most_recent_utc)
 
-        latest_datetime = source.data["x"][-1]
-        new_means, new_stds, new_datetimes = get_sentiment_stats()
+        # If there were no results, wait til next loop
+        if new_df.shape[0] == 0:
+            continue
+
+        most_recent_utc = new_df["created_utc"].max()
+
+        new_means, new_stds, new_datetimes = get_sentiment_stats(new_df)
 
         doc.add_next_tick_callback(
             partial(

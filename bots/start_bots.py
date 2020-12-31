@@ -23,7 +23,8 @@ DB_COL = os.environ["DB_COL"]
 # TODO: This will have to be a published service eventually. A simply websocket should be fine.
 if __name__ == "__main__":
     preprocessor = CommentBodyExtractor()
-    analyzer = TFModelClient(8501, "BERT_test1")
+    # analyzer = TFModelClient(8501, "BERT_test1")
+    analyzer = DummyAnalyzer()
     writer = MongoWriter(DB_NAME, DB_COL)
 
     bot = RedditStreamer("news", preprocessor, analyzer, writer)

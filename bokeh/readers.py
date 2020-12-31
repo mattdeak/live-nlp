@@ -8,7 +8,7 @@ class MongoReader:
         self,
         database_name,
         collection_name,
-        host="localhost",
+        host="db",
         port=27017,
         comment_attributes=["body", "created_utc", "id", "score"],
     ):
@@ -25,7 +25,7 @@ class MongoReader:
             pruned_comment = {
                 field: result["comment"][field] for field in comment_return_fields
             }
-            pruned_comment['analysis'] = result['analysis'][0]
+            pruned_comment['analysis'] = result['analysis']
             pruned_comments.append(pruned_comment)
 
         return pruned_comments
