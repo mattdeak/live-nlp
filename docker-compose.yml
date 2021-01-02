@@ -9,6 +9,8 @@ services:
             - "5000:5000"
         environment:
             FLASK_ENV: development
+        volumes:
+            - ./app:/home/app
     bokeh:
         container_name: 'livenlp_bokeh'
         build:

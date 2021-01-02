@@ -6,7 +6,7 @@ RUN apt-get update && \
 RUN pip install flask bokeh pymongo pandas
 
 WORKDIR /home/app
-COPY . .
+# COPY . .
 # TODO: Don't hardcode port maybe?
 
 ENTRYPOINT ["python"]

@@ -107,6 +107,5 @@ def load_new_comments():
 
 
 doc.add_root(p)
-
 update_thread = Thread(target=load_new_comments)
 update_thread.start()
