@@ -23,6 +23,8 @@ services:
         environment:
             - DB_NAME=$DB
             - DB_COL=$COLLECTION
+        volumes:
+            - ./bokeh:/home/app
     db:
         image: mongo:latest
         container_name: 'livenlp_mongo'

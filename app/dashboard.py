@@ -10,7 +10,7 @@ import datetime
 
 from flask import Flask, render_template, request, redirect, url_for
 
-default_url = "http://0.0.0.0:5006/streaming_chart"
+default_url = "http://0.0.0.0:5006/sentiment_streaming"
 app = Flask(__name__)
 
 
@@ -25,32 +25,31 @@ def index():
 
 @app.route("/reddit/<subreddit>")
 def reddit_query(subreddit):
-    script = server_document(default_url)
+    # TODO: Better hash scheme than this. What if a coll has multiple subreddits?
+    db_collection = subreddit 
+    script = server_document(default_url, arguments={'collection':subreddit})
 
     return render_template(
         "index.html",
         plot_script=script,
-        plot_title=f'Reddit Query: {subreddit}',
+        plot_title=f"Reddit Query: {subreddit}",
         template="Flask",
     )
 
-@app.route("/refresh_bot", methods=['POST', 'GET'])
+
+@app.route("/refresh_bot", methods=["POST", "GET"])
 def refresh_bot():
-    if request.method == 'GET':
+    if request.method == "GET":
         return f"URL /refresh_bot should not be accessed directly"
-    elif request.method == 'POST':
+    elif request.method == "POST":
         form_data = request.form
-        source = form_data['sources']
-        if source != 'reddit':
-            return f'Source : {source} not yet supported'
+        source = form_data["sources"]
+        if source != "reddit":
+            return f"Source : {source} not yet supported"
         else:
-            query = form_data['query']
+            query = form_data["query"]
             # TODO: Start another bot and switch the bokeh server somehow.
-            return redirect(url_for('reddit_query', subreddit=query))
-
-            
-
-
+            return redirect(url_for("reddit_query", subreddit=query))
 
 
 if __name__ == "__main__":

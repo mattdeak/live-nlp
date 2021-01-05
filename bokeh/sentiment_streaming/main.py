@@ -11,13 +11,16 @@ from bokeh.models.sources import ColumnDataSource
 from bokeh.plotting import curdoc, figure
 from tornado import gen
 
-from readers import MongoReader
+from .readers import MongoReader
 import os
 
 DB_NAME = os.environ["DB_NAME"]
-COLL_NAME = os.environ["DB_COL"]
 
-reader = MongoReader(DB_NAME, COLL_NAME)
+# Session Args
+args = curdoc().session_context.request.arguments
+collection = str(args["collection"][0])
+
+reader = MongoReader(DB_NAME, collection)
 
 
 def get_updated_df(last_utc=0):
@@ -28,6 +31,7 @@ def get_updated_df(last_utc=0):
 
 
 def get_sentiment_stats(df):
+    assert df.size > 0, "Dataframe Empty"
     df["created_datetime"] = df["created_utc"].apply(datetime.datetime.fromtimestamp)
 
     df = df.set_index("created_datetime")
@@ -42,19 +46,21 @@ def get_sentiment_stats(df):
     return sentiment_mean, sentiment_std, datetimes
 
 
-# ---- Define Initial Chart --- #
+# ---- Define Initial Chart ---- #
 new_df = get_updated_df()
+if new_df.empty:
+    most_recent_utc = 0
+    new_data = {"x": [], "y": [], "y1": [], "y2": []}
+else:
+    most_recent_utc = new_df["created_utc"].max()
+    new_means, new_stds, new_datetimes = get_sentiment_stats(new_df)
 
-most_recent_utc = new_df["created_utc"].max()
-
-new_means, new_stds, new_datetimes = get_sentiment_stats(new_df)
-
-new_data = {
-    "x": new_datetimes,
-    "y": new_means,
-    "y1": new_means - new_stds,
-    "y2": new_means + new_stds,
-}
+    new_data = {
+        "x": new_datetimes,
+        "y": new_means,
+        "y1": new_means - new_stds,
+        "y2": new_means + new_stds,
+    }
 
 source = ColumnDataSource(data=new_data)
 doc = curdoc()
@@ -70,6 +76,7 @@ p = figure(
 
 mean = p.line(x="x", y="y", source=source)
 fill = p.varea(x="x", y1="y1", y2="y2", fill_color="red", fill_alpha=0.2, source=source)
+# ---- Done Chart Definition ---- #
 
 
 @gen.coroutine
@@ -88,7 +95,7 @@ def load_new_comments():
         new_df = get_updated_df(last_utc=most_recent_utc)
 
         # If there were no results, wait til next loop
-        if new_df.shape[0] == 0:
+        if new_df.empty:
             continue
 
         most_recent_utc = new_df["created_utc"].max()
