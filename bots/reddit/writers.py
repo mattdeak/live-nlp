@@ -44,7 +44,7 @@ class MongoWriter:
             key: getattr(data["comment"], key) for key in self.comment_attributes
         }
 
-        assert type(data) == dict, "JSONWriter requires DICT input"
+        assert type(data) == dict, "MongoWriter requires DICT input"
 
         self.collection.insert_one(data)
 

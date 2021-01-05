@@ -155,6 +155,7 @@ class RedditStreamer:
     def _result_handler_thread(self, analyzed_q):
         # TODO: Implement this whole thing.
         # ---- DUMMY for TESTING
+        self.logger.debug("Starting Writer Thread")
         while True:
             result = analyzed_q.get(block=True)
             self.logger.debug("Writing result to file")
