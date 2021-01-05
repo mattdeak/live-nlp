@@ -6,7 +6,24 @@
     <title>Document</title>
 </head>
 <body>
-    <h1 style="text-align: center; margin-bottom: 40px;">Streaming Plot</h1>
+    <h1 style="text-align: center; margin-bottom: 40px;">{{ plot_title | title }}</h1>
+
+    <!-- Just for testing, will make this prettier later -->
+    <p>Select Source</p>
+    <form name="botserver" action="http://localhost:5000/refresh_bot" method = "POST">
+        <select name="sources" id="sources">
+            <option value="reddit">Reddit</option>
+            <option value="blank">Blank</option>
+        </select>
+
+        <label for="query">Query:</label>
+        <input type="text" id="query" name="query">
+        <input type="submit" value="Submit">
+    </form>
+
+
+
+
     <div style="display: flex; justify-content: center;">
     {{ plot_script|indent(4)|safe }}
     </div>
