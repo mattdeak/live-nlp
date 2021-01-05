@@ -1,8 +1,11 @@
 import datetime
 import json
+import logging
+import os
+import sys
+import time
 from functools import partial
 from threading import Thread
-import time
 
 import pandas as pd
 from bokeh.layouts import column
@@ -12,13 +15,23 @@ from bokeh.plotting import curdoc, figure
 from tornado import gen
 
 from .readers import MongoReader
-import os
 
 DB_NAME = os.environ["DB_NAME"]
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler(sys.stderr)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter(
+    "%(created)f:%(levelname)s:%(name)s:%(module)s:%(message)s"
+)
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
 # Session Args
 args = curdoc().session_context.request.arguments
-collection = str(args["collection"][0])
+collection = (args["collection"][0]).decode('utf-8')
+logger.info(f"Using Collection: {collection}")
 
 reader = MongoReader(DB_NAME, collection)
 
