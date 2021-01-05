@@ -39,12 +39,12 @@ services:
         ports:
             - "27017:27017"
         # command: ["-f", "/etc/mongod.conf"]
-    # tfserver:
-    #     build:
-    #         context: ./tfserver
-    #         dockerfile: Dockerfile
-    #     ports:
-    #         - "8501:8501"
+    tfserver:
+        build:
+            context: ./tfserver
+            dockerfile: Dockerfile
+        ports:
+            - "8501:8501"
     bots:
         container_name: 'livenlp_bots'
         build:
