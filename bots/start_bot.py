@@ -23,11 +23,9 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-try:
-    DB_NAME = os.environ["DB_NAME"]
-except KeyError:
-    DB_NAME = "test_db"
-
+DB_NAME = os.environ.get('DB_NAME', 'test_db')
+DB_HOST = os.environ.get('DB_HOST', 'localhost')
+DB_PORT = os.environ.get('DB_PORT', 27017)
 
 def initialize_bot(bot_config):
     bot_type = bot_config["bot_type"]
@@ -43,7 +41,6 @@ def initialize_bot(bot_config):
     analyzer_args = bot_config.get("analyzer_args", [])
     analyzer = initialize_analyzer(analyzer, *analyzer_args)
 
-    # There is almost certainly a cleaner way to do this
     writer_name = bot_config["writer"]
     writer_kwargs = bot_config["writer_kwargs"]
     writer = initialize_writer(writer_name, **writer_kwargs)
@@ -58,8 +55,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--bot_type", required=True)
     parser.add_argument("--query", required=True)
-    parser.add_argument("--db_host", default="localhost")
-    parser.add_argument("--db_port", default=27017)
+    parser.add_argument("--db_host", default=DB_HOST)
+    parser.add_argument("--db_port", type=int, default=DB_PORT)
     parser.add_argument("--db_name", default=DB_NAME)
     parser.add_argument("--preprocessor", default="CommentBodyExtractor")
     parser.add_argument("--analyzer", default="DummyAnalyzer")

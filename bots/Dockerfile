@@ -9,5 +9,4 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 WORKDIR /home/app
-COPY . .
 CMD ["python3","botserver.py"]

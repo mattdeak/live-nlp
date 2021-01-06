@@ -8,6 +8,7 @@ from functools import partial
 from threading import Thread
 
 import pandas as pd
+import numpy as np
 from bokeh.layouts import column
 from bokeh.models import Button
 from bokeh.models.sources import ColumnDataSource
@@ -16,12 +17,15 @@ from tornado import gen
 
 from .readers import MongoReader
 
+# DB_HOST = os.environ.get("DB_HOST", "localhost")
+# DB_PORT = int(os.environ.get("DB_PORT", 27017))
 DB_NAME = os.environ["DB_NAME"]
+WINDOW_SIZE = os.environ.get("STREAMING_WINDOW_SIZE", 20)
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(sys.stderr)
-handler.setLevel(logging.INFO)
+handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter(
     "%(created)f:%(levelname)s:%(name)s:%(module)s:%(message)s"
 )
@@ -30,9 +34,11 @@ logger.addHandler(handler)
 
 # Session Args
 args = curdoc().session_context.request.arguments
-collection = (args["collection"][0]).decode('utf-8')
+collection = (args["collection"][0]).decode("utf-8")
 logger.info(f"Using Collection: {collection}")
 
+# logger.debug(f'{DB_HOST},{DB_PORT}{DB_NAME}{collection}')
+# reader = MongoReader(DB_NAME, collection, host=DB_NAME, port=DB_PORT)
 reader = MongoReader(DB_NAME, collection)
 
 
@@ -67,6 +73,8 @@ if new_df.empty:
 else:
     most_recent_utc = new_df["created_utc"].max()
     new_means, new_stds, new_datetimes = get_sentiment_stats(new_df)
+    # new_datetimes = new_datetimes.apply(lambda x: np.datetime64('NaT') if x == np.nan else x)
+    
 
     new_data = {
         "x": new_datetimes,

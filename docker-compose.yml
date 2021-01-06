@@ -8,7 +8,8 @@ services:
         ports:
             - "5000:5000"
         environment:
-            FLASK_ENV: development
+            - BOT_SERVER_HOST=$BOT_SERVER_HOST
+            - BOT_SERVER_PORT=$BOT_SERVER_PORT
         volumes:
             - ./app:/home/app
     bokeh:
@@ -21,8 +22,9 @@ services:
         depends_on:
             - db
         environment:
-            - DB_NAME=$DB
-            - DB_COL=$COLLECTION
+            - DB_NAME=$DB_NAME
+            - DB_HOST=$DB_HOST
+            - DB_PORT=$DB_PORT
         volumes:
             - ./bokeh:/home/app
     db:
@@ -41,22 +43,30 @@ services:
         ports:
             - "27017:27017"
         # command: ["-f", "/etc/mongod.conf"]
-    tfserver:
-        build:
-            context: ./tfserver
-            dockerfile: Dockerfile
-        ports:
-            - "8501:8501"
+    # tfserver:
+    #     build:
+    #         context: ./tfserver
+    #         dockerfile: Dockerfile
+    #     ports:
+    #         - "8501:8501"
     bots:
         container_name: 'livenlp_bots'
         build:
             context: ./bots
             dockerfile: Dockerfile
+        ports:
+            - ${BOT_SERVER_PORT}:${BOT_SERVER_PORT}
         depends_on:
             # - tfserver
             - db
         environment:
-            - DB_NAME=$DB
-            - DB_COL=$COLLECTION
+            - DB_NAME=$DB_NAME
+            - DB_HOST=$DB_HOST
+            - DB_PORT=$DB_PORT
+            - BOT_SERVER_HOST=$BOT_SERVER_HOST
+            - BOT_SERVER_PORT=$BOT_SERVER_PORT
+        volumes:
+            - ./bots:/home/app
+
 volumes:
     mongodb_data_container:

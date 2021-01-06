@@ -12,6 +12,9 @@ from flask_restful import Resource, Api, reqparse
 
 logging.basicConfig(level=logging.DEBUG)
 
+BOT_SERVER_HOST = os.environ.get("BOT_SERVER_HOST", "localhost")
+BOT_SERVER_PORT = os.environ.get("BOT_SERVER_PORT", 10555)
+
 app = Flask(__name__)
 api = Api(app)
 
@@ -33,7 +36,6 @@ def kill_process(dictionary, process_id):
     bot.terminate()
 
 
-
 atexit.register(cleanup)
 
 # -----------------------#
@@ -43,7 +45,7 @@ class LiveBots(Resource):
     parser.add_argument("query", required=True)
     # TODO: Generate these based on available models maybe?
     parser.add_argument(
-        "analyzer_settings", choices=("dummy"), required=True
+        "analyzer_settings", choices=("DummyAnalyzer"), required=True
     )  # ,'simpleBERT'))
 
     def get(self):
@@ -67,7 +69,7 @@ class LiveBots(Resource):
         if args.source == "reddit":
             bot_type = "reddit_streamer"
 
-        if args.analyzer_settings == "dummy":
+        if args.analyzer_settings == "DummyAnalyzer":
             analyzer = "DummyAnalyzer"
 
         query = args.query
@@ -105,4 +107,4 @@ api.add_resource(LiveBot, "/livebot/<string:name>")
 
 
 if __name__ == "__main__":
-    app.run(port=10555, debug=True)
+    app.run(host=BOT_SERVER_HOST, port=BOT_SERVER_PORT, debug=True)

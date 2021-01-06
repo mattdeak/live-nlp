@@ -9,15 +9,25 @@
     <h1 style="text-align: center; margin-bottom: 40px;">{{ plot_title | title }}</h1>
 
     <!-- Just for testing, will make this prettier later -->
-    <p>Select Source</p>
     <form name="botserver" action="http://localhost:5000/refresh_bot" method = "POST">
-        <select name="sources" id="sources">
+        <label for="source">Source:</label>
+        <select name="source" id="source">
             <option value="reddit">Reddit</option>
-            <option value="blank">Blank</option>
         </select>
 
         <label for="query">Query:</label>
         <input type="text" id="query" name="query">
+
+        <label for=analysis_type>Analysis Type</label>
+        <select name="analysis_type" id="analysis_type">
+            <option value="live">Live</option>
+        </select>
+
+        <!-- TODO: analyzer list should depend on analysis type -->
+        <label for="analyzer">Analyzer Settings</label>
+        <select name="analyzer" id="analyzer">
+            <option value="DummyAnalyzer">Dummy</option>
+            <option value="SimpleBERT">simpleBERT</option>
         <input type="submit" value="Submit">
     </form>
 
