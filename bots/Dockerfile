@@ -10,4 +10,4 @@ RUN pip install -r requirements.txt
 
 WORKDIR /home/app
 COPY . .
-CMD ["python","start_bots.py"]
+CMD ["python3","botserver.py"]

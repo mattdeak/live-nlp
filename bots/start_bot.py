@@ -44,8 +44,8 @@ def initialize_bot(bot_config):
     analyzer = initialize_analyzer(analyzer, *analyzer_args)
 
     # There is almost certainly a cleaner way to do this
-    writer_name = bot_config['writer']
-    writer_kwargs = bot_config['writer_kwargs']
+    writer_name = bot_config["writer"]
+    writer_kwargs = bot_config["writer_kwargs"]
     writer = initialize_writer(writer_name, **writer_kwargs)
     # Initialize and Start Bot
     if bot_type == "reddit_streamer":
