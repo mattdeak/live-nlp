@@ -4,12 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"/></script>
+
+<style>
+.flex-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-child {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+</style>
 </head>
 <body>
+
+
     <h1 style="text-align: center; margin-bottom: 40px;">{{ plot_title | title }}</h1>
 
     <!-- Just for testing, will make this prettier later -->
-    <form name="botserver" action="http://localhost:5000/refresh_bot" method = "POST">
+    <form name="botserver" action="{{ url_for('refresh_bot') }}" method = "POST">
         <label for="source">Source:</label>
         <select name="source" id="source">
             <option value="reddit">Reddit</option>
@@ -32,10 +48,102 @@
     </form>
 
 
+    <div class="flex-container">
+        <div class="flex-child" style="display: flex;">
+            <button id="refresh_botlist_btn">Refresh Botlist</button>
+            <table id="botList" name='botList'>
+            <thead>
+                <tr>
+                    <th>Bot ID</th>
+                    <th>Bot Description</th>
+                    <th>View Bot</th>
+                    <th>Delete Bot</th>
+                </thead>
+            <tbody>
+            </tbody>
+            </table>
+        </div>
 
 
-    <div style="display: flex; justify-content: center;">
-    {{ plot_script|indent(4)|safe }}
+        <div class="flex-child" style="display: flex; justify-content: center;">
+            <h2 id="bot_chart">Chart View</h2>
+            <div style="display: flex; justify-content: center;">
+            {% if plot_script is defined %}
+                {{ plot_script|indent(4)|safe }}
+            {% endif %}
+            </div>
+        </div>
     </div>
+
+    <script>
+
+        function refresh_botlist(){
+            $("#botList tbody tr").remove();
+            var botTable = document.getElementById("botList").getElementsByTagName('tbody')[0];
+            
+            $.getJSON("{{ url_for('refresh_botlist') }}", function(data){
+                $.each(data, function(key, val){
+                    console.log(key, val);
+                    var row = botTable.insertRow(0);
+
+                    var query = val.split('|')[2]
+                    row.id = key;
+                    $('#'+key).data('bokehName', {'bokehName': query});
+
+                    var bokehname = $('#'+key).data('bokehName');
+                    console.log(bokehname);
+
+                    var cell1 = row.insertCell(0);
+                    var cell2 = row.insertCell(1);
+                    var cell3 = row.insertCell(2);
+                    var cell4 = row.insertCell(3);
+
+                    var view_btn = document.createElement('input');
+                    view_btn.type = "button";
+                    view_btn.className = "btn";
+                    view_btn.value = "View Chart";
+                    view_btn.onclick = function() {
+                        location.assign(`/view/${query}`);
+                    }
+
+                    var del_btn = document.createElement('input');
+                    del_btn.type = "button";
+                    del_btn.className = "btn";
+                    del_btn.value = "Delete Bot";
+                    del_btn.addEventListener('click', function(){
+                        delete_bot(key);
+                    });
+
+                    cell1.innerHTML = key;
+                    cell2.innerHTML = val;
+                    cell3.appendChild(view_btn);
+                    cell4.appendChild(del_btn);
+                });
+            });
+        }
+        
+        function delete_bot(bot_id){
+            console.log(bot_id);
+            const url =  `/delete_bot/${bot_id}`
+            console.log(url)
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success: function(result) {
+                    console.log(result)
+                    $(`#${bot_id}`).remove();
+                }
+            });
+        }
+
+
+
+        $(function(){
+            console.log("Performing dom manipulations")
+            refresh_botlist();
+            $("#refresh_botlist_btn").click(refresh_botlist);
+            
+        });
+    </script>
 </body>
 </html>

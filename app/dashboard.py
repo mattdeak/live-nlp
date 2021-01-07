@@ -9,7 +9,7 @@ import json
 import datetime
 
 from flask import Flask, render_template, request, redirect, url_for
-from utils import convert_form_to_bot_request, request_new_bot
+from utils import convert_form_to_bot_request, request_new_bot, get_botlist, delete_bot
 
 default_bokeh_url = "http://0.0.0.0:5006/sentiment_streaming"
 
@@ -20,8 +20,11 @@ app = Flask(__name__)
 def index():
     script = server_document(default_bokeh_url)
 
+    # return render_template(
+    #     "index.html", plot_script=script, plot_title="default", template="Flask"
+    # )
     return render_template(
-        "index.html", plot_script=script, plot_title="default", template="Flask"
+        "index.html", plot_title="default", template="Flask"
     )
 
 
@@ -61,6 +64,16 @@ def refresh_bot():
 def view_data(collection):
     return redirect(url_for("reddit_query", subreddit=collection))
 
+
+@app.route("/refresh_botlist")
+def refresh_botlist():
+    response = get_botlist()
+    return response.json()
+
+@app.route("/delete_bot/<bot_id>", methods=['DELETE'])
+def send_deletion_request(bot_id):
+    resp = delete_bot(bot_id)
+    return str(resp.status_code)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

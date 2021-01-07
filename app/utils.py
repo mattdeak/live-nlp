@@ -1,10 +1,11 @@
 import os
 import requests
+import string
 
 LIVEBOT_HOST = os.environ.get('BOT_SERVER_HOST', 'localhost')
 LIVEPOT_PORT = os.environ.get('BOT_SERVER_PORT', 10555)
 LIVEBOT_URL = f'http://{LIVEBOT_HOST}:{LIVEPOT_PORT}/livebots'
-LIVEBOT_DELETE_URL_TEMPLATE = f'http://{LIVEBOT_HOST}:{LIVEPOT_PORT}/livebot/$bot_id'
+LIVEBOT_DELETE_URL_TEMPLATE = string.Template(f'http://{LIVEBOT_HOST}:{LIVEPOT_PORT}/livebot/$bot_id')
 
 def convert_form_to_bot_request(form_data):
     source = form_data['source']
@@ -29,3 +30,5 @@ def delete_bot(bot_id):
     return requests.delete(url)
 
 
+def get_botlist():
+    return requests.get(LIVEBOT_URL)
