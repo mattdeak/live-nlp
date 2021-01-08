@@ -1,32 +1,12 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
 {% block title %}Index{% endblock %}
+{% block nav_index %}active{% endblock %}
 
 {% block content %}
 <h1 style="text-align: center; margin-bottom: 40px;">{{ plot_title | title }}</h1>
 
 <!-- Just for testing, will make this prettier later -->
-<form name="botserver" action="{{ url_for('refresh_bot') }}" method = "POST">
-    <label for="source">Source:</label>
-    <select name="source" id="source">
-        <option value="reddit">Reddit</option>
-    </select>
-
-    <label for="query">Query:</label>
-    <input type="text" id="query" name="query">
-
-    <label for=analysis_type>Analysis Type</label>
-    <select name="analysis_type" id="analysis_type">
-        <option value="live">Live</option>
-    </select>
-
-    <!-- TODO: analyzer list should depend on analysis type -->
-    <label for="analyzer">Analyzer Settings</label>
-    <select name="analyzer" id="analyzer">
-        <option value="DummyAnalyzer">Dummy</option>
-        <option value="SimpleBERT">simpleBERT</option>
-    <input type="submit" value="Submit">
-</form>
 
 <div class="flex-container">
     <div class="flex-child">

@@ -13,12 +13,12 @@
 
 <body>
     <div class="sidebar">
-        <a class="active" href="#home">Home</a>
-        <a href="#charts">Charts</a>
-        <a href="#bots">Bots</a>
-        <a href="#analyses">Analyses</a>
-        <a href="#contact">Contact</a>
-        <a href="#about">About</a>
+        <a class="{% block nav_index %}{% endblock %}" href="{{ url_for('index') }}">Home</a>
+        <a class="{% block nav_bots %}{% endblock %}" href=" {{ url_for('bots') }}">Bots</a>
+        <a class="{% block nav_live %}{% endblock %}" href="{{ url_for('live') }}">Live Analysis</a>
+        <a class="{% block nav_analyses %}{% endblock %}" href="#analyses">Static Analysis</a>
+        <a class="{% block nav_contact %}{% endblock %}" href="#contact">Contact</a>
+        <a class="{% block nav_about %}{% endblock %}" href="#about">About</a>
     </div>
 
     <div id="content" class="content">

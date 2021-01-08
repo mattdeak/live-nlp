@@ -41,6 +41,27 @@ def reddit_query(subreddit):
         template="Flask",
     )
 
+@app.route("/bots")
+def bots():
+    return render_template("bots.html", template="Flask")
+
+@app.route("/live-analysis", methods=['GET','POST'])
+def live():
+    # This whole thing is gross. TODO: Make less gross
+
+    chart_list_resp = get_botlist() #TODO: Eventually this should be decoupled from bots
+    chart_list = chart_list_resp.json()
+
+    chart_sources = [c.split('|')[-1] for c in chart_list.values()]
+
+    if request.method == 'GET':
+        return render_template("charts.html", chart_sources=chart_sources, template="Flask")
+    else:
+        selected_chart = request.form['chart_source']
+        print('selected chart = ' + selected_chart)
+        plot_script = server_document(default_bokeh_url, arguments={"collection": selected_chart})
+        return render_template("charts.html", chart_sources=chart_sources, plot_script=plot_script, template='Flask')
+
 
 @app.route("/refresh_bot", methods=["POST", "GET"])
 def refresh_bot():

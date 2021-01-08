@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}New Bot{% endblock %}
+{% block nav_bots %}active{% endblock %}
+{% block content %}
+<form id="frm_add_bot" name="botserver" action="{{ url_for('refresh_bot') }}" method = "POST">
+    <label for="source">Source:</label>
+    <select name="source" id="source">
+        <option value="reddit">Reddit</option>
+    </select>
+
+    <label for="query">Query:</label>
+    <input type="text" id="query" name="query">
+
+    <label for=analysis_type>Analysis Type</label>
+    <select name="analysis_type" id="analysis_type">
+        <option value="live">Live</option>
+    </select>
+
+    <!-- TODO: analyzer list should depend on analysis type -->
+    <label for="analyzer">Analyzer Settings</label>
+    <select name="analyzer" id="analyzer">
+        <option value="DummyAnalyzer">Dummy</option>
+        <option value="SimpleBERT">simpleBERT</option>
+    <input type="submit" value="Submit">
+</form>
+
+<div class="flex-child">
+    <button id="refresh_botlist_btn">Refresh Botlist</button>
+    <table id="botList" class="bot_list" name='botList'>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Source</th>
+            <th>Analysis Type</th>
+            <th>Analyzer</th>
+            <th>Query</th>
+            <th>Initialization Time</th>
+        </thead>
+    <tbody>
+    </tbody>
+    </table>
+</div>
+{% endblock %}

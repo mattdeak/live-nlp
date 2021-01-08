@@ -7,38 +7,31 @@ function refresh_botlist(){
             console.log(key, val);
             var row = botTable.insertRow(0);
 
-            var query = val.split('|')[2]
+            var split = val.split('|')
+
+            var source = split[0]
+            var analyzer = split[1]
+            var query = split[2]
             row.id = key;
             $('#'+key).data('bokehName', {'bokehName': query});
 
             var bokehname = $('#'+key).data('bokehName');
             console.log(bokehname);
 
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3);
+            var id_cell = row.insertCell(0);
+            var source_cell = row.insertCell(1);
+            var analysis_type_cell = row.insertCell(2);
+            var analyzer_cell = row.insertCell(3);
+            var query_cell = row.insertCell(4)
+            var initalization_cell = row.insertCell(5);
 
-            var view_btn = document.createElement('input');
-            view_btn.type = "button";
-            view_btn.className = "btn";
-            view_btn.value = "View Chart";
-            view_btn.onclick = function() {
-                location.assign(`/view/${query}`);
-            }
 
-            var del_btn = document.createElement('input');
-            del_btn.type = "button";
-            del_btn.className = "btn";
-            del_btn.value = "Delete Bot";
-            del_btn.addEventListener('click', function(){
-                delete_bot(key);
-            });
-
-            cell1.innerHTML = key;
-            cell2.innerHTML = val;
-            cell3.appendChild(view_btn);
-            cell4.appendChild(del_btn);
+            id_cell.innerHTML = key;
+            source_cell.innerHTML = source;
+            analysis_type_cell.innerHTML = 'Live'; //TODO: Automate
+            analyzer_cell.innerHTML = analyzer;
+            query_cell.innerHTML = query;
+            initalization_cell.innerHTML = 'NotImplemented'
         });
     });
 }

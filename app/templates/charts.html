@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}New Bot{% endblock %}
+{% block nav_charts %}active{% endblock %}
+{% block content %}
+
+<form id='livechart_selector' action="{{ url_for('live') }}" method="POST">
+    <select id="chart_source" name='chart_source'>
+    {% if chart_sources is defined %}
+        {% for chart_source in chart_sources %}
+            <option value="{{ chart_source }}">{{ chart_source }}</option>
+        {% endfor %}
+    {% endif %}
+    <input type="submit"/>
+</form>
+
+<div class="flex-child">
+    <h2 id="bot_chart">Chart View</h2>
+    <div style="display: flex; justify-content: center;">
+    {% if plot_script is defined %}
+        {{ plot_script|indent(4)|safe }}
+    {% else %}
+        <p>Select a Chart Source</p>
+    {% endif %}
+    </div>
+</div>
+
+{% endblock %}
