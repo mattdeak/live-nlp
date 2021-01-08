@@ -75,7 +75,7 @@ def refresh_bot():
         else:
             botserver_url, botserver_request = convert_form_to_bot_request(form_data)
             resp = request_new_bot(botserver_url, botserver_request)
-            return redirect(url_for('index'))
+            return redirect(url_for('bots'))
 
 @app.route("/view/<collection>")
 def view_data(collection):

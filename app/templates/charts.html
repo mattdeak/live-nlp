@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}New Bot{% endblock %}
-{% block nav_charts %}active{% endblock %}
+{% block nav_live %}active{% endblock %}
 {% block content %}
 
 <form id='livechart_selector' action="{{ url_for('live') }}" method="POST">
@@ -10,7 +10,7 @@
             <option value="{{ chart_source }}">{{ chart_source }}</option>
         {% endfor %}
     {% endif %}
-    <input type="submit"/>
+    <input type="submit" value="View Chart"/>
 </form>
 
 <div class="flex-child">

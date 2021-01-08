@@ -24,6 +24,7 @@ function refresh_botlist(){
             var analyzer_cell = row.insertCell(3);
             var query_cell = row.insertCell(4)
             var initalization_cell = row.insertCell(5);
+            var delete_cell = row.insertCell(6)
 
 
             id_cell.innerHTML = key;
@@ -32,6 +33,16 @@ function refresh_botlist(){
             analyzer_cell.innerHTML = analyzer;
             query_cell.innerHTML = query;
             initalization_cell.innerHTML = 'NotImplemented'
+
+            var delete_btn = document.createElement('input')
+            delete_btn.type = "button";
+            delete_btn.className = "btn";
+            delete_btn.value = 'x';
+            delete_btn.addEventListener('click', function(){
+                delete_bot(key);
+            });
+
+            delete_cell.appendChild(delete_btn);
         });
     });
 }

@@ -1,7 +1,10 @@
 {% extends "base.html" %}
-{% block title %}New Bot{% endblock %}
+{% block title %}Bots{% endblock %}
 {% block nav_bots %}active{% endblock %}
 {% block content %}
+
+<button type="button" class="collapsible">Add Bot</button>
+<div class="div_addbot">
 <form id="frm_add_bot" name="botserver" action="{{ url_for('refresh_bot') }}" method = "POST">
     <label for="source">Source:</label>
     <select name="source" id="source">
@@ -21,11 +24,14 @@
     <select name="analyzer" id="analyzer">
         <option value="DummyAnalyzer">Dummy</option>
         <option value="SimpleBERT">simpleBERT</option>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Create Bot">
 </form>
+</div>
 
 <div class="flex-child">
+    <h3 style="align-self: flex-start">Bots In-Progress</h3>
     <button id="refresh_botlist_btn">Refresh Botlist</button>
+    </div>
     <table id="botList" class="bot_list" name='botList'>
     <thead>
         <tr>
@@ -35,9 +41,25 @@
             <th>Analyzer</th>
             <th>Query</th>
             <th>Initialization Time</th>
+            <th>Delete</th>
         </thead>
     <tbody>
     </tbody>
     </table>
 </div>
+    <script>
+    var coll = document.getElementsByClassName("collapsible");
+    var i;
+
+    for (i = 0; i < coll.length; i++) {
+      coll[i].addEventListener("click", function() {
+        this.classList.toggle("active");
+        var content = this.nextElementSibling;
+        if (content.style.maxHeight){
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      });
+}</script>
 {% endblock %}
