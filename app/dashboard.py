@@ -54,11 +54,7 @@ def refresh_bot():
         else:
             botserver_url, botserver_request = convert_form_to_bot_request(form_data)
             resp = request_new_bot(botserver_url, botserver_request)
-            if resp.status_code in [200, 201]:
-                query = form_data["query"]
-                return redirect(url_for("reddit_query", subreddit=query))
-            else:
-                return f"Error starting Bot on Botserver: {resp.status_code},{resp.json()}"
+            return redirect(url_for('index'))
 
 @app.route("/view/<collection>")
 def view_data(collection):
@@ -74,6 +70,9 @@ def refresh_botlist():
 def send_deletion_request(bot_id):
     resp = delete_bot(bot_id)
     return str(resp.status_code)
+
+def list_available_collections():
+    pass
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)
