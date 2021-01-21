@@ -52,7 +52,7 @@ services:
     bots:
         container_name: 'livenlp_bots'
         build:
-            context: ./bots
+            context: ./bot-server
             dockerfile: Dockerfile
         ports:
             - ${BOT_SERVER_PORT}:${BOT_SERVER_PORT}
@@ -66,7 +66,7 @@ services:
             - BOT_SERVER_HOST=$BOT_SERVER_HOST
             - BOT_SERVER_PORT=$BOT_SERVER_PORT
         volumes:
-            - ./bots:/home/app
+            - ./bot-server:/home/app
 
 volumes:
     mongodb_data_container:
